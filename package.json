@@ -7,12 +7,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/antigravity/cssense"
+    "url": "https://github.com/nemuWork1215/CSSense"
   },
   "bugs": {
-    "url": "https://github.com/antigravity/cssense/issues"
+    "url": "https://github.com/nemuWork1215/CSSense/issues"
   },
-  "homepage": "https://github.com/antigravity/cssense#readme",
+  "homepage": "https://github.com/nemuWork1215/CSSense#readme",
   "engines": {
     "vscode": "^1.74.0"
   },
