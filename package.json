@@ -1,0 +1,72 @@
+{
+  "name": "cssense",
+  "displayName": "CSSense",
+  "description": "HTMLと連携したCSSセレクタ補完拡張。リンクされたHTMLからクラス名・ID・要素を抽出して補完候補に提示し、重複セレクタの検出と定義へのジャンプをサポートします。",
+  "version": "0.2.0",
+  "publisher": "nemu1215",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antigravity/cssense"
+  },
+  "bugs": {
+    "url": "https://github.com/antigravity/cssense/issues"
+  },
+  "homepage": "https://github.com/antigravity/cssense#readme",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other",
+    "Snippets"
+  ],
+  "keywords": [
+    "css",
+    "autocomplete",
+    "html",
+    "selector",
+    "intellisense",
+    "completion",
+    "scss",
+    "less"
+  ],
+  "galleryBanner": {
+    "color": "#1a1a2e",
+    "theme": "dark"
+  },
+  "activationEvents": [
+    "onLanguage:css",
+    "onLanguage:scss",
+    "onLanguage:less"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "CSSense",
+      "properties": {
+        "cssense.searchAllHtmlFiles": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "リンクされたHTMLファイルが見つからない場合、ワークスペース全体のHTMLファイルを検索対象にします。"
+        },
+        "cssense.maxHtmlFiles": {
+          "type": "number",
+          "default": 300,
+          "markdownDescription": "セレクタ抽出のためにスキャンするHTMLファイルの最大数。"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "npx vsce package --no-dependencies --allow-missing-repository"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "^18.x",
+    "typescript": "^5.0.0",
+    "@vscode/vsce": "^2.0.0"
+  }
+}

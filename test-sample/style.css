@@ -1,0 +1,164 @@
+/* ==============================================
+   テスト用CSS
+   補完テスト: 新しいセレクタを下に追加してみてください
+   ============================================== */
+
+/* --- Reset --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Header --- */
+.site-header {
+  background-color: #1a1a2e;
+  padding: 16px 24px;
+}
+
+.global-nav {
+  display: flex;
+  align-items: center;
+}
+
+.nav-list {
+  list-style: none;
+  display: flex;
+  gap: 24px;
+}
+
+.nav-item {
+  font-size: 14px;
+}
+
+.nav-link {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.nav-item.active .nav-link {
+  color: #e94560;
+  font-weight: bold;
+}
+
+/* --- Hero --- */
+.hero {
+  padding: 80px 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #0f3460, #16213e);
+  color: #fff;
+}
+
+.hero-title {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.hero-description {
+  font-size: 18px;
+  color: #aaa;
+  margin-bottom: 32px;
+}
+
+/* --- Button --- */
+.btn {
+  display: inline-block;
+  padding: 12px 32px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn-primary {
+  background-color: #e94560;
+  color: #fff;
+}
+
+/* --- Cards --- */
+.card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  padding: 40px 24px;
+}
+
+.card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.card-body {
+  padding: 16px;
+}
+
+.card-title {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.card-text {
+  color: #666;
+  line-height: 1.6;
+}
+
+/* ここに .card-link を追加してみてください */
+/* ここに .tag や .tag-important を追加してみてください */
+
+/* --- Sidebar --- */
+#sidebar {
+  padding: 24px;
+  background: #f5f5f5;
+}
+
+/* ここに #main-content を追加すると重複警告が出ます (下に定義済み) */
+
+.widget-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.widget-list {
+  list-style: none;
+}
+
+/* --- Footer --- */
+.site-footer {
+  background: #1a1a2e;
+  color: #aaa;
+  text-align: center;
+  padding: 24px;
+}
+
+.card-link{
+  background-color: #0f3460;
+}
+
+
+/* --- メディアクエリ (補完テスト: @media内でも補完されます) --- */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 28px;
+  }
+
+  .card-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==============================================
+   重複テスト: 以下は意図的に重複定義しています
+   → 波線の警告と F12 ジャンプを確認してください
+   ============================================== */
+
+#main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* 重複 (警告が出るはず) */
+#main-content {
+  padding: 20px;
+}
