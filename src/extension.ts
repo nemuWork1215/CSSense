@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { CssCompletionProvider } from './completionProvider';
 import { CssDefinitionProvider } from './definitionProvider';
+import { CssSuppressActionProvider } from './codeActions';
 import { diagnosticCollection, refreshDiagnostics } from './diagnostics';
 import { invalidateCache } from './htmlParser';
 
@@ -22,6 +23,13 @@ export function activate(context: vscode.ExtensionContext): void {
     const definition = vscode.languages.registerDefinitionProvider(
         CSS_SELECTOR,
         new CssDefinitionProvider()
+    );
+
+    // 重複セレクタのクイックアクション
+    const codeAction = vscode.languages.registerCodeActionsProvider(
+        CSS_SELECTOR,
+        new CssSuppressActionProvider(),
+        { providedCodeActionKinds: CssSuppressActionProvider.providedCodeActionKinds }
     );
 
     // HTMLファイルが変更されたらキャッシュを無効化
@@ -47,6 +55,7 @@ export function activate(context: vscode.ExtensionContext): void {
     context.subscriptions.push(
         completion,
         definition,
+        codeAction,
         diagnosticCollection,
         onHtmlChange,
         onOpen,

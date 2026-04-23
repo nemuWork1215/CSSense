@@ -87,7 +87,8 @@ function parseCssSelectors(content) {
             else if (raw && (depth === 0 || depth === 1)) {
                 // depth 0 = トップレベル, depth 1 = @ルール直下
                 const isAtRule = atRuleAtDepth.has(depth - 1);
-                pushSelectors(result, content, raw, selectorStart, i, isAtRule);
+                const isMulti = raw.includes(',');
+                pushSelectors(result, content, raw, selectorStart, i, isAtRule, isMulti);
             }
             depth++;
             selectorStart = i + 1;
@@ -100,7 +101,7 @@ function parseCssSelectors(content) {
     }
     return result;
 }
-function pushSelectors(result, content, rawNoComments, searchFrom, limit, isAtRule) {
+function pushSelectors(result, content, rawNoComments, searchFrom, limit, isAtRule, isMulti) {
     const parts = rawNoComments.split(',');
     let offset = searchFrom;
     for (const part of parts) {
@@ -115,6 +116,7 @@ function pushSelectors(result, content, rawNoComments, searchFrom, limit, isAtRu
                     line: lines.length - 1,
                     character: lines[lines.length - 1].length,
                     isAtRule,
+                    isMulti,
                 });
                 offset = idx + trimmed.length;
             }

@@ -23,6 +23,10 @@ export class CssCompletionProvider implements vscode.CompletionItemProvider {
             position
         );
 
+        // カーソル後に既に { がある場合はセレクタ名のみ挿入する
+        const textAfterCursor = lineText.slice(position.character).trimStart();
+        const hasBrace = textAfterCursor.startsWith('{');
+
         const { classes, ids, elements } = await getHtmlSelectorsForCss(document.uri);
         const items: vscode.CompletionItem[] = [];
 
@@ -32,7 +36,7 @@ export class CssCompletionProvider implements vscode.CompletionItemProvider {
             for (const cls of classes) {
                 if (cls.toLowerCase().startsWith(prefix)) {
                     items.push(makeItem(`.${cls}`, `.${cls}`, replaceRange,
-                        vscode.CompletionItemKind.Class, 'class (HTML)'));
+                        vscode.CompletionItemKind.Class, 'class (HTML)', hasBrace));
                 }
             }
         } else if (token.startsWith('#')) {
@@ -41,7 +45,7 @@ export class CssCompletionProvider implements vscode.CompletionItemProvider {
             for (const id of ids) {
                 if (id.toLowerCase().startsWith(prefix)) {
                     items.push(makeItem(`#${id}`, `#${id}`, replaceRange,
-                        vscode.CompletionItemKind.Reference, 'id (HTML)'));
+                        vscode.CompletionItemKind.Reference, 'id (HTML)', hasBrace));
                 }
             }
         } else {
@@ -50,18 +54,18 @@ export class CssCompletionProvider implements vscode.CompletionItemProvider {
             for (const el of elements) {
                 if (el.startsWith(prefix)) {
                     items.push(makeItem(el, el, replaceRange,
-                        vscode.CompletionItemKind.Keyword, 'element (HTML)', '1'));
+                        vscode.CompletionItemKind.Keyword, 'element (HTML)', hasBrace, '1'));
                 }
             }
             // トークンが空のときはクラス・IDも列挙
             if (!token) {
                 for (const cls of classes) {
                     items.push(makeItem(`.${cls}`, `.${cls}`, replaceRange,
-                        vscode.CompletionItemKind.Class, 'class (HTML)', '2'));
+                        vscode.CompletionItemKind.Class, 'class (HTML)', hasBrace, '2'));
                 }
                 for (const id of ids) {
                     items.push(makeItem(`#${id}`, `#${id}`, replaceRange,
-                        vscode.CompletionItemKind.Reference, 'id (HTML)', '2'));
+                        vscode.CompletionItemKind.Reference, 'id (HTML)', hasBrace, '2'));
                 }
             }
         }
@@ -76,11 +80,14 @@ function makeItem(
     range: vscode.Range,
     kind: vscode.CompletionItemKind,
     detail: string,
+    hasBrace: boolean,
     sortPrefix = '0'
 ): vscode.CompletionItem {
     const item = new vscode.CompletionItem(label, kind);
-    // セレクタ確定後にすぐルールセットを書ける状態にする
-    item.insertText = new vscode.SnippetString(`${selector} {\n\t$0\n}`);
+    // 既に { がある場合はセレクタ名のみ、なければルールセットごと挿入
+    item.insertText = hasBrace
+        ? new vscode.SnippetString(selector)
+        : new vscode.SnippetString(`${selector} {\n\t$0\n}`);
     item.range = range;
     item.detail = detail;
     item.sortText = `${sortPrefix}_${label}`;

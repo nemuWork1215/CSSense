@@ -39,22 +39,31 @@ const vscode = __importStar(require("vscode"));
 const cssParser_1 = require("./cssParser");
 exports.diagnosticCollection = vscode.languages.createDiagnosticCollection('cssense');
 const CSS_LANGS = new Set(['css', 'scss', 'less']);
+function isIgnored(lines, selectorLine) {
+    if (selectorLine === 0)
+        return false;
+    return lines[selectorLine - 1].trim() === '/* cssense-ignore */';
+}
 function refreshDiagnostics(document) {
     if (!CSS_LANGS.has(document.languageId))
         return;
     const content = document.getText();
+    const lines = content.split('\n');
     const selectors = (0, cssParser_1.parseCssSelectors)(content);
-    // @ルール外 (ルートレベル) のセレクタのみ重複チェック対象とする
-    // @media 内の上書き定義は重複とみなさない
-    const rootSelectors = selectors.filter(s => !s.isAtRule);
+    // ルートレベル かつ 単体セレクタ のみ重複チェック対象
+    const candidates = selectors.filter(s => !s.isAtRule && !s.isMulti);
     const firstOccurrence = new Map();
     const diags = [];
-    for (const info of rootSelectors) {
+    for (const info of candidates) {
+        if (isIgnored(lines, info.line)) {
+            continue;
+        }
         const key = info.selector;
         const first = firstOccurrence.get(key);
         if (first) {
             const range = new vscode.Range(new vscode.Position(info.line, info.character), new vscode.Position(info.line, info.character + key.length));
-            const diag = new vscode.Diagnostic(range, `"${key}" はすでに ${first.line + 1} 行目に定義されています。F12 (Go to Definition) で移動できます。`, vscode.DiagnosticSeverity.Warning);
+            const msg = '"' + key + '" はすでに ' + (first.line + 1) + ' 行目に定義されています。F12 (Go to Definition) で移動できます。';
+            const diag = new vscode.Diagnostic(range, msg, vscode.DiagnosticSeverity.Warning);
             diag.source = 'CSSense';
             diags.push(diag);
         }

@@ -159,6 +159,7 @@
 }
 
 /* 重複 (警告が出るはず) */
+/* cssense-ignore */
 #main-content {
   padding: 20px;
 }

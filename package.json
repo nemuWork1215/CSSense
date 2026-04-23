@@ -2,7 +2,7 @@
   "name": "cssense",
   "displayName": "CSSense",
   "description": "HTMLと連携したCSSセレクタ補完拡張。リンクされたHTMLからクラス名・ID・要素を抽出して補完候補に提示し、重複セレクタの検出と定義へのジャンプをサポートします。",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "nemu1215",
   "license": "MIT",
   "repository": {

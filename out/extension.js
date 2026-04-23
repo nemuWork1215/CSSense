@@ -38,6 +38,7 @@ exports.deactivate = deactivate;
 const vscode = __importStar(require("vscode"));
 const completionProvider_1 = require("./completionProvider");
 const definitionProvider_1 = require("./definitionProvider");
+const codeActions_1 = require("./codeActions");
 const diagnostics_1 = require("./diagnostics");
 const htmlParser_1 = require("./htmlParser");
 const CSS_SELECTOR = [
@@ -50,6 +51,8 @@ function activate(context) {
     const completion = vscode.languages.registerCompletionItemProvider(CSS_SELECTOR, new completionProvider_1.CssCompletionProvider(), '.', '#');
     // 定義へ移動 (F12 / Ctrl+Click)
     const definition = vscode.languages.registerDefinitionProvider(CSS_SELECTOR, new definitionProvider_1.CssDefinitionProvider());
+    // 重複セレクタのクイックアクション
+    const codeAction = vscode.languages.registerCodeActionsProvider(CSS_SELECTOR, new codeActions_1.CssSuppressActionProvider(), { providedCodeActionKinds: codeActions_1.CssSuppressActionProvider.providedCodeActionKinds });
     // HTMLファイルが変更されたらキャッシュを無効化
     const onHtmlChange = vscode.workspace.onDidChangeTextDocument(e => {
         const lang = e.document.languageId;
@@ -67,7 +70,7 @@ function activate(context) {
     const onClose = vscode.workspace.onDidCloseTextDocument(d => diagnostics_1.diagnosticCollection.delete(d.uri));
     // 起動時にすでに開いているCSSファイルを処理
     vscode.workspace.textDocuments.forEach(diagnostics_1.refreshDiagnostics);
-    context.subscriptions.push(completion, definition, diagnostics_1.diagnosticCollection, onHtmlChange, onOpen, onClose);
+    context.subscriptions.push(completion, definition, codeAction, diagnostics_1.diagnosticCollection, onHtmlChange, onOpen, onClose);
 }
 function deactivate() { }
 //# sourceMappingURL=extension.js.map

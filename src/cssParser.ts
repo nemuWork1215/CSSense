@@ -9,6 +9,8 @@ export interface CssSelectorInfo {
     character: number;
     /** @media / @supports などの中にあるセレクタかどうか */
     isAtRule: boolean;
+    /** カンマ区切りのマルチセレクタの一部かどうか (例: "button, .btn {}") */
+    isMulti: boolean;
 }
 
 /**
@@ -52,7 +54,8 @@ export function parseCssSelectors(content: string): CssSelectorInfo[] {
             } else if (raw && (depth === 0 || depth === 1)) {
                 // depth 0 = トップレベル, depth 1 = @ルール直下
                 const isAtRule = atRuleAtDepth.has(depth - 1);
-                pushSelectors(result, content, raw, selectorStart, i, isAtRule);
+                const isMulti = raw.includes(',');
+                pushSelectors(result, content, raw, selectorStart, i, isAtRule, isMulti);
             }
 
             depth++;
@@ -73,7 +76,8 @@ function pushSelectors(
     rawNoComments: string,
     searchFrom: number,
     limit: number,
-    isAtRule: boolean
+    isAtRule: boolean,
+    isMulti: boolean
 ): void {
     const parts = rawNoComments.split(',');
     let offset = searchFrom;
@@ -90,6 +94,7 @@ function pushSelectors(
                     line: lines.length - 1,
                     character: lines[lines.length - 1].length,
                     isAtRule,
+                    isMulti,
                 });
                 offset = idx + trimmed.length;
             }
